@@ -26,7 +26,6 @@ def lambdaToGetMarkdownPicturePosition(content):
         curStr = curStr.split('(')[1]
         curStr = curStr.strip(')')
         urlList.append(curStr)
-        print(curStr)
 
     return urlList
 
@@ -69,7 +68,7 @@ def handleArticle(articleObject):
 
     oldAndNewDict = {}
     if markdowncontent is not None:
-        mdUrlList = lambdaToGetHtmlPicturePosition(markdowncontent)
+        mdUrlList = lambdaToGetMarkdownPicturePosition(markdowncontent)
         for mdUrl in mdUrlList:
             if mdUrl not in oldAndNewDict.keys():
                 resultUrl = putUrlPicToAliOss(mdUrl, getPicNameFromPicUrl(mdUrl))

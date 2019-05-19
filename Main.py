@@ -21,15 +21,15 @@ def main(session, logInJsonObject):
 
 def doSingle(session, logInJsonObject, articleId):
     articleObject = getArticle(articleId, session)
-    jsonObject = handleArticle(articleObject)
-    f = open('content.html', 'w', encoding='utf-8')
-    f.write(jsonObject['content'])
-    f.close()
+    articleObject = handleArticle(articleObject)
+    saveArticle(articleObject, session)
+
     print('完成：' + articleId)
 
 
 if __name__ == '__main__':
-    userId = 'username'
-    password = 'password'
+    userId = 'userid'
+    password = 'passwd'
+
     session, logInObject = doLogin(userId, password)
     main(session, logInObject)

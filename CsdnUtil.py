@@ -74,7 +74,8 @@ def saveArticle(jsonObject, session):
     :param jsonObject:
     :param session:
     """
-    boundary = '------WebKitFormBoundary7MA4YWxkTrZu0gW'
+    baseBodunary = '----WebKitFormBoundary7MA4YWxkTrZu0gW'
+    boundary = '--' + baseBodunary
     id = jsonObject['id']
     title = jsonObject['title'].strip()
     articleedittype = jsonObject['articleedittype']
@@ -98,29 +99,29 @@ def saveArticle(jsonObject, session):
 
     payload = "{boundary}\r\nContent-Disposition: form-data; name=\"title\"\r\n\r\n" \
               "{title}\r\n" \
-              "{boundary}\r\nContent-Disposition: form-data; name=\"markdowncontent\"\r\n\r\n " \
+              "{boundary}\r\nContent-Disposition: form-data; name=\"markdowncontent\"\r\n\r\n" \
               "{markdowncontent}\r\n" \
               "{boundary}\r\nContent-Disposition: form-data; name=\"content\"\r\n\r\n" \
               "{content}\r\n" \
-              "{boundary}\r\nContent-Disposition: form-data; name=\"id\"\r\n\r\n " \
+              "{boundary}\r\nContent-Disposition: form-data; name=\"id\"\r\n\r\n" \
               "{id}\r\n" \
               "{boundary}\r\nContent-Disposition: form-data; name=\"private\"\r\n\r\n" \
               "\r\n" \
-              "{boundary}\r\nContent-Disposition: form-data; name=\"read_need_vip\"\r\n\r\n " \
+              "{boundary}\r\nContent-Disposition: form-data; name=\"read_need_vip\"\r\n\r\n" \
               "{read_need_vip}\r\n" \
-              "{boundary}\r\nContent-Disposition: form-data; name=\"tags\"\r\n\r\n " \
+              "{boundary}\r\nContent-Disposition: form-data; name=\"tags\"\r\n\r\n" \
               "{tags}\r\n" \
-              "{boundary}\r\nContent-Disposition: form-data; name=\"status\"\r\n\r\n " \
+              "{boundary}\r\nContent-Disposition: form-data; name=\"status\"\r\n\r\n" \
               "{status}\r\n" \
-              "{boundary}\r\nContent-Disposition: form-data; name=\"categories\"\r\n\r\n " \
+              "{boundary}\r\nContent-Disposition: form-data; name=\"categories\"\r\n\r\n" \
               "{categories}\r\n" \
-              "{boundary}\r\nContent-Disposition: form-data; name=\"channel\"\r\n\r\n " \
+              "{boundary}\r\nContent-Disposition: form-data; name=\"channel\"\r\n\r\n" \
               "{channel}\r\n" \
               "{boundary}\r\nContent-Disposition: form-data; name=\"type\"\r\n\r\n" \
               "{type}\r\n" \
-              "{boundary}\r\nContent-Disposition: form-data; name=\"articleedittype\"\r\n\r\n " \
+              "{boundary}\r\nContent-Disposition: form-data; name=\"articleedittype\"\r\n\r\n" \
               "{articleedittype}\r\n" \
-              "{boundary}\r\nContent-Disposition: form-data; name=\"Description\"\r\n\r\n " \
+              "{boundary}\r\nContent-Disposition: form-data; name=\"Description\"\r\n\r\n" \
               "{description}\r\n" \
               "{boundary}\r\nContent-Disposition: form-data; " \
               "name=\"csrf_token\"\r\n\r\n\r\n{boundary}-- ".format(boundary=boundary, title=title, id=id,
@@ -136,23 +137,39 @@ def saveArticle(jsonObject, session):
         'accept': "*/*",
         'accept-encoding': "gzip, deflate, br",
         'accept-language': "en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7",
-        'content-type': "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
+        'content-type': "multipart/form-data; boundary={boundary}".format(boundary=baseBodunary),
         'origin': "https://mp.csdn.net",
         'referer': "https://mp.csdn.net/mdeditor/90292004",
         'user-agent': "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36",
-        'Cache-Control': "no-cache",
-        'Postman-Token': "76c8f028-258f-462e-9cd4-00294e3e620d,d3e13008-b401-4d1d-ac5e-d8cb1b13901f",
-        'Host': "mp.csdn.net",
-        'Connection': "keep-alive",
-        'cache-control': "no-cache"
     }
 
     response = session.request("POST", url, data=payload.encode('utf-8'), headers=headers)
     jsonObject = json.loads(bytes.decode(response.content))
     if jsonObject['status'] == True:
+        print(jsonObject)
         print('保存' + id + '内容成功')
     else:
-        print('保存' + id + '内容失败' + response.content)
+        print('保存' + id + '内容失败' + str(response.content))
+
+
+def requestAriticle(session, articleId):
+    url = "https://blog.csdn.net/qq_36982160/article/details/" + articleId
+
+    headers = {
+        'Accept': "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
+        'Accept-Encoding': "gzip, deflate, br",
+        'Accept-Language': "en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7",
+        'Cache-Control': "max-age=0",
+        'Connection': "keep-alive",
+        'Host': "blog.csdn.net",
+        'Referer': "https://blog.csdn.net/qq_36982160/article/list/4?",
+        'Upgrade-Insecure-Requests': "1",
+        'User-Agent': "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36",
+    }
+
+    response = session.request("GET", url, headers=headers)
+
+    return session
 
 
 def doLogin(userId, password):

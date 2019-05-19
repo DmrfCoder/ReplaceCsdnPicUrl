@@ -358,7 +358,7 @@ def saveArticle(jsonObject, session):
 
 完整代码：[github](https://github.com/DmrfCoder/ReplaceCsdnPictureUrl)，如点击超链接无法访问，请在浏览器地址栏输入`https://github.com/DmrfCoder/ReplaceCsdnPictureUrl`后访问。
 
-### 不足之处
+### 需要优化的地方
 
 - 将单线程改为多线程执行
 - 优化正则表达式部分
